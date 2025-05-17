@@ -196,8 +196,50 @@ public class Level {
 	//#############################################################################################################
 	//Your code goes here! 
 	//Please make sure you read the rubric/directions carefully and implement the solution recursively!
+	// Precondition: player touches a flower within map bounds
+	// Postcondition: water flows out of where the flower was at varying degrees
 	private void water(int col, int row, Map map, int fullness) {
-		
+		 //make water (You’ll need modify this to make different kinds of water such as half water and quarter water)
+		String type = "";
+		if(fullness == 3){
+			type = "Full_water";
+		} else if(fullness == 2){
+			type = "Half_water";
+		} else if(fullness == 1){
+			type = "Quarter_water";
+		} else if(fullness == 0){
+			type = "Falling_water";
+		}
+		Water w = new Water(col, row, tileSize, tileset.getImage(type), this, fullness);
+		map.addTile(col, row, w);
+
+        //check if we can go down
+		//down
+		if(row+1 < height && !(map.getTiles()[col][row+1].isSolid())){
+			if(row+2 < map.getTiles()[0].length && !(map.getTiles()[col][row+2] instanceof Water) && map.getTiles()[col][row+2].isSolid()){
+				water(col, row+1, map, 3);
+			} else {
+				water(col, row+1, map, 0);
+			}
+		}
+        //if we can’t go down go left and right.
+		//right
+		if(col+1 < map.getTiles().length && !(map.getTiles()[col+1][row] instanceof Water) && !(map.getTiles()[col+1][row].isSolid())) {
+			if(fullness == 3){
+				water(col+1, row, map, 2);
+			} else {
+				water(col+1, row, map, 1);
+			}
+		}
+		//left
+		if(col-1 >= 0 && !(map.getTiles()[col-1][row] instanceof Water) && !(map.getTiles()[col-1][row].isSolid())) {
+			if(fullness == 3){
+				water(col-1, row, map, 2);
+			} else {
+				water(col-1, row, map, 1);
+			}
+			
+		}
 	}
 
 
